@@ -164,7 +164,7 @@ Si no se envía `fecha`, se utiliza la fecha actual.
 - pip
 
 La evolución del esquema se administra con Alembic. Para crear una base nueva,
-configurá `ALEMBIC_DATABASE_URL` y ejecutá `alembic upgrade head`.
+configurá la base normal de la aplicación y ejecutá `alembic upgrade head`.
 
 ## Instalación
 
@@ -194,12 +194,28 @@ DB_USUARIO=postgres
 DB_PASSWORD=tu_password
 DB_NOMBRE=drugstore
 
+# Opcional: URL completa para aplicación y Alembic; prevalece sobre DB_*.
+# DATABASE_URL=postgresql+psycopg://usuario:password@host:5432/drugstore
+# TEST_DATABASE_URL=postgresql+psycopg://usuario:password@host:5432/drugstore_test
+
 JWT_SECRETO=un_secreto_largo_y_seguro
 JWT_ALGORITMO=HS256
 JWT_EXPIRACION_MINUTOS=60
+
+PUBLIC_DEMO_MODE=false
+CORS_ORIGINS=http://localhost:3000,http://localhost:5165
 ```
 
 La conexión SQLAlchemy utiliza el dialecto `postgresql+psycopg`.
+`DATABASE_URL` (o, si se omite, `DB_*`) configura la aplicación y Alembic.
+`TEST_DATABASE_URL` se usa únicamente en los tests de integración y debe
+apuntar a una base PostgreSQL distinta. La suite rechaza ambas URLs iguales.
+
+`PUBLIC_DEMO_MODE=true` restringe la instancia pública: permite las lecturas
+habituales, login, crear ventas y crear compras, y bloquea la administración de
+usuarios y las demás escrituras con 403. La autorización JWT vigente continúa
+aplicándose. `CORS_ORIGINS` acepta orígenes separados por comas; si se omite,
+se usan los dos orígenes locales mostrados arriba.
 
 ## Ejecución
 

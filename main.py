@@ -16,6 +16,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from api.politica_demo_publica import PoliticaDemoPublicaMiddleware
+from infraestructura.basedatos.configuracion import obtener_cors_origins
+
 # Importamos todas las rutas
 from api.rutas.rutas_auth import router as router_auth
 from api.rutas.rutas_categorias import router as router_categorias
@@ -38,9 +41,10 @@ app = FastAPI(
 
 # Configuramos CORS para que Next.js pueda hacer peticiones
 # noinspection PyTypeChecker
+app.add_middleware(PoliticaDemoPublicaMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5165"],  # URL del frontend Next.js
+    allow_origins=obtener_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],     # Permitir todos los métodos (GET, POST, PUT, DELETE)
     allow_headers=["*"],     # Permitir todos los headers (incluido Authorization)

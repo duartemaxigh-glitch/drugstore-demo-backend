@@ -1,4 +1,3 @@
-import os
 from logging.config import fileConfig
 
 from sqlalchemy import create_engine, make_url, pool
@@ -15,6 +14,7 @@ from infraestructura.basedatos.modelos import (
     usuario_modelo,
     venta_modelo,
 )
+from infraestructura.basedatos.configuracion import DATABASE_URL
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -40,18 +40,10 @@ EXPECTED_TABLES = {
 
 
 def _database_url():
-    raw_url = os.getenv("ALEMBIC_DATABASE_URL")
-    if not raw_url:
-        raise RuntimeError(
-            "ALEMBIC_DATABASE_URL no está configurada. Alembic requiere una "
-            "URL PostgreSQL explícita y no usa la base de la aplicación como "
-            "fallback."
-        )
-
-    url = make_url(raw_url)
+    url = make_url(DATABASE_URL)
     if url.drivername != "postgresql+psycopg":
         raise RuntimeError(
-            "ALEMBIC_DATABASE_URL debe usar el driver postgresql+psycopg."
+            "DATABASE_URL debe usar el driver postgresql+psycopg."
         )
     return url
 
